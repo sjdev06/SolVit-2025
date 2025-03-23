@@ -1,0 +1,35 @@
+1. authService.js
+Firebase Authentication simplifies user sign-ups and logins. Node.js handles asynchronous backend operations, including Firebase calls. Express.js creates routes for authentication requests like /signup and /login. Firebase securely manages sessions, while Node.js runs server-side code for handling requests. Express.js organizes the backend routes, making the API scalable.
+
+2. firestoreService.js
+Firebase Firestore stores and manages data, offering real-time synchronization. Node.js interacts with Firestore asynchronously, ensuring smooth API requests. Express.js handles CRUD routes for managing documents in Firestore. Firebase simplifies querying and adding data, while Node.js processes requests asynchronously. Express.js organizes API routes for Firestore interactions.
+
+3. lostFoundService.js
+Firebase Firestore stores lost and found items, ensuring real-time data synchronization. Node.js manages backend logic for creating, updating, and retrieving items. Express.js defines routes for item operations (POST, GET, PUT). Firebase handles efficient database interactions, while Node.js ensures non-blocking asynchronous operations. Express.js simplifies routing for CRUD operations.
+
+4. sellDonateService.js
+Firebase Firestore stores sell and donate items, syncing changes in real-time. Node.js handles backend logic for selling and donating items. Express.js sets up routes for item operations (add, update, delete). Firebase allows seamless data management, while Node.js ensures asynchronous, non-blocking operations. Express.js simplifies route creation and API structure.
+
+5. userListingsService.js
+Firebase Firestore stores user-specific listings, ensuring real-time updates. Node.js handles backend logic for fetching and querying listings by user. Express.js defines routes for retrieving and updating listings. Firebase allows easy querying and management of data. Node.js handles asynchronous requests efficiently. Express.js simplifies the routing of user-specific data.
+
+6. config/firestoreConfig.js
+Firebase Admin SDK initializes Firestore and manages database access. Node.js sets up Firebase services, ensuring secure database interaction. Express.js relies on this configuration for backend routes. Firebase handles authentication and data management. Node.js initializes and configures the environment variables. Express.js connects routes to Firestore operations.
+
+7. routes/sellDonateRoutes.js
+Firebase Firestore stores and updates sell/donate items. Node.js processes HTTP requests asynchronously, interacting with Firestore. Express.js sets up routes for adding, updating, and deleting items. Firebase handles real-time syncing and updates across clients. Node.js ensures non-blocking backend operations. Express.js simplifies routing and API response management.
+
+8. routes/userRoutes.js
+Firebase Firestore manages user listings, ensuring data is updated in real-time. Node.js handles backend logic for user-specific operations like retrieving listings. Express.js defines routes for managing user listings. Firebase enables seamless querying of data based on user ID. Node.js processes requests asynchronously, improving scalability. Express.js structures API routes cleanly.
+
+9. middleware/errorHandler.js
+Firebase operations may throw errors, which are handled by the middleware. Node.js processes and forwards errors, ensuring smooth error propagation. Express.js integrates error handling middleware for centralized management. Firebase errors are captured and reported back to the client. Node.js formats and manages error responses. Express ensures proper error handling in the API.
+
+10. services/lostFoundService.js
+Firebase Firestore stores and manages lost/found items with real-time syncing. Node.js processes requests to create, update, or retrieve items. Express.js defines routes for these operations (add, retrieve, update). Firebase handles the data storage and ensures data consistency. Node.js handles the logic for non-blocking asynchronous operations. Express.js simplifies API route organization.
+
+11. config/firestoreConfig.js
+Firebase initializes Firestore and manages database connections. Node.js sets up the Firebase configuration, enabling backend access. Firebase handles authentication and data management, ensuring security. Node.js provides the environment for Firebase to run in the backend. Express.js leverages this configuration for CRUD operations. Firebase ensures smooth database communication.
+
+12. routes/lostFoundRoutes.js
+Firebase Firestore stores and manages lost/found items, ensuring data consistency. Node.js processes HTTP requests related to lost/found items. Express.js defines routes for adding, updating, and deleting items. Firebase ensures real-time data synchronization across clients. Node.js handles asynchronous request processing. Express.js simplifies the routing and management of API requests.
