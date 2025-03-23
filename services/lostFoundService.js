@@ -1,6 +1,7 @@
 import { db } from "../config/firestoreConfig.js";
 import {
-    collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, where
+    collection, addDoc, getDocs, getDoc, doc, updateDoc, deleteDoc, serverTimestamp, query, where,
+    orderBy, limit
 } from "firebase/firestore";
 
 // 🔹 Create a lost or found item
@@ -28,23 +29,50 @@ const createItem = async (itemData) => {
 
 
 // 🔹 Get filtered lost & found items with pagination
-const getAllItems = async ({ category, location, fromDate, toDate, lastVisible, pageSize = 10 }) => {
+const getAllItems = async (options = {}) => {
+    const {
+        category,
+        location,
+        fromDate,
+        toDate,
+        lastVisible,
+        pageSize = 10
+    } = options;
+
     try {
+        // console.log("Here for item ********************111111");
         let q = collection(db, 'lost_found');
         let conditions = [];
 
         if (category) conditions.push(where("category", "==", category));
         if (location) conditions.push(where("location", "==", location));
-        if (fromDate && toDate) conditions.push(where("datePosted", ">=", fromDate), where("datePosted", "<=", toDate));
+        if (fromDate && toDate) conditions.push(
+            where("datePosted", ">=", fromDate),
+            where("datePosted", "<=", toDate)
+        );
 
+        // console.log("Here for item ********************");
+
+        // Combine conditions, orderBy and limit in one query
         q = query(q, ...conditions, orderBy("datePosted", "desc"), limit(pageSize));
 
-        if (lastVisible) q = query(q, startAfter(lastVisible), orderBy("datePosted", "desc"), limit(pageSize));
+        if (lastVisible) {
+            q = query(q, startAfter(lastVisible), orderBy("datePosted", "desc"), limit(pageSize));
+        }
 
         const querySnapshot = await getDocs(q);
-        const items = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log(querySnapshot.docs);
 
-        return { items, lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1] || null };
+        const items = querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            if (!data) return null;  // Handle missing data gracefully
+            return { id: doc.id, ...data };
+        }).filter(item => item !== null);  // Filter out null values if any
+
+        return {
+            items,
+            lastVisible: querySnapshot.docs[querySnapshot.docs.length - 1] || null
+        };
     } catch (error) {
         throw new Error("Error fetching items: " + error.message);
     }
