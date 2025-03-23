@@ -1,53 +1,74 @@
-import express from "express";
-import {
-    createItem,
-    getAllItems,
-    getItemById,
-    resolveItem,
-    deleteItem
-} from "../services/lostFoundService.js";
+import { createItem, getAllItems, getItemById, updateItemStatus, deleteItem } from '../services/lostFoundService.js';
 
-const router = express.Router();
-
-// 🔹 Create Lost/Found Item
-router.post("/create", async (req, res) => {
+// Controller to add a new item
+export const addLostFoundItem = async (req, res) => {
     try {
-        const newItem = await createItem(req.body);
-        res.status(201).json(newItem);
+        const newItem = req.body; // Getting item data from request body
+        const createdItem = await createItem(newItem); // Adding item via service
+        res.status(201).json({ message: 'Item added successfully', item: createdItem });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Error adding item: ' + error.message });
     }
-});
+};
 
-// 🔹 Get All Lost/Found Items
-router.get("/", async (req, res) => {
+// Controller to get all items
+export const getAllLostFoundItems = async (req, res) => {
     try {
-        const items = await getAllItems();
-        res.status(200).json(items);
+        const { category, location, fromDate, toDate, lastVisible, pageSize } = req.query;
+        const options = {
+            category,
+            location,
+            fromDate: fromDate ? new Date(fromDate) : undefined,
+            toDate: toDate ? new Date(toDate) : undefined,
+            lastVisible,
+            pageSize: pageSize ? parseInt(pageSize) : 10
+        };
+        const result = await getAllItems(options);
+        res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Error fetching items: ' + error.message });
     }
-});
+};
 
-// 🔹 Get Specific Item by ID
-router.get("/:id", async (req, res) => {
+// Controller to get an item by ID
+export const getLostFoundItemById = async (req, res) => {
     try {
-        const item = await getItemById(req.params.id);
+        const itemId = req.params.id; // Getting item ID from URL
+        const item = await getItemById(itemId);
+        if (!item) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
         res.status(200).json(item);
     } catch (error) {
-        res.status(404).json({ error: "Item not found" });
+        res.status(500).json({ error: 'Error fetching item: ' + error.message });
     }
-});
+};
 
-// 🔹 Mark Item as Resolved
-router.patch("/resolve/:id", async (req, res) => {
+// Controller to update item status (e.g., marking as sold)
+export const updateLostFoundItemStatus = async (req, res) => {
     try {
-        await resolveItem(req.params.id);
-        res.status(200).json({ message: "Item marked as resolved" });
+        const itemId = req.params.id;
+        const { status } = req.body; // Status to update (e.g., "sold", "found")
+        const updatedItem = await updateItemStatus(itemId, status);
+        if (!updatedItem) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.status(200).json({ message: 'Item status updated', item: updatedItem });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: 'Error updating item status: ' + error.message });
     }
-});
+};
 
-// 🔹 Delete Lost/Found Item
-router.delete("/:id", async (req, res) => {
+// Controller to delete an item
+export const deleteLostFoundItem = async (req, res) => {
+    try {
+        const itemId = req.params.id;
+        const deletedItem = await deleteItem(itemId);
+        if (!deletedItem) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.status(200).json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: 'Error deleting item: ' + error.message });
+    }
+};
