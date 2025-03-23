@@ -1,0 +1,30 @@
+{
+  "name": "solvit-2025",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sjdev06/SolVit-2025.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sjdev06/SolVit-2025/issues"
+  },
+  "homepage": "https://github.com/sjdev06/SolVit-2025#readme",
+  "description": "",
+  "dependencies": {
+    "firebase": "^11.5.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
