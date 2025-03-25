@@ -1,51 +1,35 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Check, Search } from "lucide-react";
 import "./LostPage.css";
 
-const lostItems = [
-  {
-    id: 1,
-    image: "./iphone.jpg",
-    name: "iPhone 13 Pro",
-    date: "2023-03-15",
-    mobile: "9876543210",
-    description: "Lost in the university cafeteria. Has a blue case with stickers.",
-    location: "vit",
-    owner: { name: "Parth Sharma", address: "Room 302, Men's Hostel, VIT", phone: "9876543210" },
-  },
-  {
-    id: 2,
-    image: "./wallet.jpg",
-    name: "Black Wallet",
-    date: "2023-03-18",
-    mobile: "8765432109",
-    description: "Contains ID card and some cash. Lost near the library.",
-    location: "vit",
-    owner: { name: "Rahul Verma", address: "Room 205, Men's Hostel, VIT", phone: "8765432109" },
-  },
-  {
-    id: 3,
-    image: "./bag.jpg",
-    name: "Laptop Bag",
-    date: "2023-03-20",
-    mobile: "7654321098",
-    description: "Black Dell laptop bag with charger and mouse inside. Lost in the lecture hall.",
-    location: "vit",
-    owner: { name: "Ananya Patel", address: "Room 112, Women's Hostel, VIT", phone: "7654321098" },
-  },
-];
-
 const LostPage = () => {
+  const [lostItems, setLostItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [verifying, setVerifying] = useState(null);
   const [verified, setVerified] = useState(null);
   const [answer, setAnswer] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
-  const handleVerify = (id) => {
+  useEffect(() => {
+    fetch("http://localhost:5000/api/lost-items") // Replace with your backend API URL
+      .then((response) => response.json())
+      .then((data) => {
+        setLostItems(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching lost items:", err);
+        setError("Failed to fetch lost items");
+        setLoading(false);
+      });
+  }, []);
+
+  const handleVerify = (id, location) => {
     if (verifying === id) {
-      if (answer.toLowerCase() === "vit") {
+      if (answer.toLowerCase() === location.toLowerCase()) {
         setVerified(id);
         setVerifying(null);
       } else {
@@ -58,6 +42,9 @@ const LostPage = () => {
     }
   };
 
+  if (loading) return <p>Loading lost items...</p>;
+  if (error) return <p className="error">{error}</p>;
+
   const filteredItems = lostItems.filter((item) =>
     [item.name, item.description].some((field) => field.toLowerCase().includes(searchTerm.toLowerCase()))
   );
@@ -68,7 +55,6 @@ const LostPage = () => {
         <div className="header">
           <button onClick={() => navigate("/")} className="back-link">
             <ArrowLeft className="mr-2" size={20} />
-            {/* <span>Back to Home</span> */}
           </button>
           <h1 className="header-title">Lost Items</h1>
         </div>
@@ -116,12 +102,12 @@ const LostPage = () => {
                         onChange={(e) => setAnswer(e.target.value)}
                         className="verification-input"
                       />
-                      <button onClick={() => handleVerify(item.id)} className="verify-btn">
+                      <button onClick={() => handleVerify(item.id, item.location)} className="verify-btn">
                         Submit
                       </button>
                     </div>
                   ) : (
-                    <button onClick={() => handleVerify(item.id)} className="verify-btn">
+                    <button onClick={() => handleVerify(item.id, item.location)} className="verify-btn">
                       Verify
                     </button>
                   )}
